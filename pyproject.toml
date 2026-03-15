@@ -1,0 +1,62 @@
+[project]
+name = "farmmod-hub"
+version = "0.1.0"
+description = "FarmMod - gerenciador de mods para Farming Simulator no Linux"
+requires-python = ">=3.10"
+license = {text = "AGPL-3.0-or-later"}
+authors = [
+  {name = "Henrique", email = "henriquejsza@gmail.com"},
+]
+maintainers = [
+  {name = "Henrique", email = "henriquejsza@gmail.com"},
+]
+
+[project.urls]
+Homepage = "https://github.com/henrique/farmmod-hub"
+Repository = "https://github.com/henrique/farmmod-hub"
+Issues = "https://github.com/henrique/farmmod-hub/issues"
+
+[project.scripts]
+farmmod-hub = "farmmod_hub.presentation.gtk.app:main"
+mod-fs19 = "farmmod_hub.presentation.gtk.app:main"
+
+[project.optional-dependencies]
+dev = [
+  "black>=24.0.0",
+  "mypy>=1.10.0",
+  "pytest>=8.0.0",
+  "ruff>=0.5.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["farmmod_hub*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src", "tests"]
+ignore_missing_imports = true
+warn_unused_ignores = true
