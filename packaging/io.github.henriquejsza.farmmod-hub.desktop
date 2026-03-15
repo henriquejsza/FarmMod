@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FarmMod
+Comment=Mod manager for Farming Simulator on Linux
+Exec=farmmod
+Icon=io.github.henriquejsza.farmmod-hub
+Terminal=false
+Categories=Utility;Game;
+StartupNotify=true

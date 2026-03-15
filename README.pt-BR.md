@@ -21,10 +21,10 @@ Idioma: Portugues (Brasil) | [English](README.md)
 Arch Linux (AUR via `yay`):
 
 ```bash
-yay -S farmmod-hub
+yay -S farmmod
 ```
 
-Pagina do pacote: `https://aur.archlinux.org/packages/farmmod-hub`
+Pagina do pacote: `https://aur.archlinux.org/packages/farmmod`
 
 ## Rodar Pelo Codigo-Fonte
 

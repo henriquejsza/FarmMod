@@ -1,9 +1,9 @@
 [project]
-name = "farmmod-hub"
+name = "farmmod"
 version = "0.1.0"
 description = "FarmMod - gerenciador de mods para Farming Simulator no Linux"
 requires-python = ">=3.10"
-license = {text = "AGPL-3.0-or-later"}
+license = "AGPL-3.0-or-later"
 authors = [
   {name = "Henrique", email = "henriquejsza@gmail.com"},
 ]
@@ -12,11 +12,12 @@ maintainers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/henrique/farmmod-hub"
-Repository = "https://github.com/henrique/farmmod-hub"
-Issues = "https://github.com/henrique/farmmod-hub/issues"
+Homepage = "https://github.com/henriquejsza/FarmMod"
+Repository = "https://github.com/henriquejsza/FarmMod"
+Issues = "https://github.com/henriquejsza/FarmMod/issues"
 
 [project.scripts]
+farmmod = "farmmod_hub.presentation.gtk.app:main"
 farmmod-hub = "farmmod_hub.presentation.gtk.app:main"
 mod-fs19 = "farmmod_hub.presentation.gtk.app:main"
 
