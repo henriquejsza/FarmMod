@@ -22,11 +22,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Mark workspace as safe
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
       - name: Install build tooling
         run: pacman -Syu --noconfirm --needed base-devel git openssh curl python
+
+      - name: Mark workspace as safe
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Resolve version
         id: version
