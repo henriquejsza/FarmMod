@@ -112,7 +112,31 @@ EOF
 
 (
   cd "$WORKDIR/aur"
-  makepkg --printsrcinfo > .SRCINFO
+  cat > .SRCINFO <<EOF
+pkgbase = ${AUR_PACKAGE}
+	pkgdesc = Mod manager for Farming Simulator on Linux
+	pkgver = ${VERSION}
+	pkgrel = 1
+	url = https://github.com/${UPSTREAM_REPO}
+	arch = any
+	license = AGPL-3.0-or-later
+	checkdepends = python-pytest
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-gobject
+	depends = gtk4
+	depends = libadwaita
+	provides = farmmod-hub
+	conflicts = farmmod-hub
+	replaces = farmmod-hub
+	source = ${AUR_PACKAGE}-${VERSION}.tar.gz::https://github.com/${UPSTREAM_REPO}/archive/refs/tags/v${VERSION}.tar.gz
+	sha256sums = ${SHA256}
+
+pkgname = ${AUR_PACKAGE}
+EOF
   git add PKGBUILD .SRCINFO
   if git diff --staged --quiet; then
     echo "No AUR changes to push."
