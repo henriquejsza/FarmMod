@@ -11,8 +11,10 @@ data = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
 print(data["project"]["version"])
 PY
 )}"
+SOURCE_ARCHIVE_PATH="${SOURCE_ARCHIVE_PATH:-refs/tags/v${VERSION}}"
+SRC_DIRNAME="${SRC_DIRNAME:-FarmMod-${VERSION}}"
 
-TARBALL_URL="https://github.com/${UPSTREAM_REPO}/archive/refs/tags/v${VERSION}.tar.gz"
+TARBALL_URL="https://github.com/${UPSTREAM_REPO}/archive/${SOURCE_ARCHIVE_PATH}.tar.gz"
 WORKDIR="$(mktemp -d)"
 trap 'rm -rf "$WORKDIR"' EXIT
 
@@ -21,10 +23,30 @@ SHA256="$(sha256sum "$WORKDIR/source.tar.gz" | cut -d' ' -f1)"
 
 git clone "ssh://aur@aur.archlinux.org/${AUR_PACKAGE}.git" "$WORKDIR/aur"
 
+CURRENT_PKGVER=""
+CURRENT_PKGREL=""
+CURRENT_SHA256=""
+if [[ -f "$WORKDIR/aur/PKGBUILD" ]]; then
+  CURRENT_PKGVER="$(grep -E '^pkgver=' "$WORKDIR/aur/PKGBUILD" | head -n1 | cut -d= -f2-)"
+  CURRENT_PKGREL="$(grep -E '^pkgrel=' "$WORKDIR/aur/PKGBUILD" | head -n1 | cut -d= -f2-)"
+  CURRENT_SHA_LINE="$(grep -E '^sha256sums=' "$WORKDIR/aur/PKGBUILD" | head -n1 || true)"
+  CURRENT_SHA256="${CURRENT_SHA_LINE#sha256sums=(\"}"
+  CURRENT_SHA256="${CURRENT_SHA256%\")}" 
+fi
+
+PKGREL=1
+if [[ "$CURRENT_PKGVER" == "$VERSION" ]]; then
+  if [[ -n "$CURRENT_SHA256" && "$CURRENT_SHA256" == "$SHA256" ]]; then
+    PKGREL="${CURRENT_PKGREL:-1}"
+  else
+    PKGREL="$(( ${CURRENT_PKGREL:-0} + 1 ))"
+  fi
+fi
+
 cat >"$WORKDIR/aur/PKGBUILD" <<EOF
 pkgname=${AUR_PACKAGE}
 pkgver=${VERSION}
-pkgrel=1
+pkgrel=${PKGREL}
 pkgdesc="Mod manager for Farming Simulator on Linux"
 arch=("any")
 url="https://github.com/${UPSTREAM_REPO}"
@@ -48,8 +70,8 @@ provides=("farmmod-hub")
 conflicts=("farmmod-hub")
 replaces=("farmmod-hub")
 
-_srcdir="FarmMod-\$pkgver"
-source=("\$pkgname-\$pkgver.tar.gz::https://github.com/${UPSTREAM_REPO}/archive/refs/tags/v\$pkgver.tar.gz")
+_srcdir="${SRC_DIRNAME}"
+source=("\$pkgname-\$pkgver.tar.gz::${TARBALL_URL}")
 sha256sums=("${SHA256}")
 
 build() {
@@ -116,7 +138,7 @@ EOF
 pkgbase = ${AUR_PACKAGE}
 	pkgdesc = Mod manager for Farming Simulator on Linux
 	pkgver = ${VERSION}
-	pkgrel = 1
+	pkgrel = ${PKGREL}
 	url = https://github.com/${UPSTREAM_REPO}
 	arch = any
 	license = AGPL-3.0-or-later
@@ -132,7 +154,7 @@ pkgbase = ${AUR_PACKAGE}
 	provides = farmmod-hub
 	conflicts = farmmod-hub
 	replaces = farmmod-hub
-	source = ${AUR_PACKAGE}-${VERSION}.tar.gz::https://github.com/${UPSTREAM_REPO}/archive/refs/tags/v${VERSION}.tar.gz
+	source = ${AUR_PACKAGE}-${VERSION}.tar.gz::${TARBALL_URL}
 	sha256sums = ${SHA256}
 
 pkgname = ${AUR_PACKAGE}
